@@ -1,9 +1,8 @@
 package me.johnnywoof.utils;
 
 import com.google.common.io.ByteStreams;
-
 import java.io.*;
-import java.net.Socket;
+import java.net.URL;
 
 public class Utils {
 
@@ -13,21 +12,17 @@ public class Utils {
      * @return If the session server is online
      */
     public static boolean isSessionServerOnline() {
-
         try {
+            URL url = new URL("https://sessionserver.mojang.com");
 
-            //Re-use the socket instance?
-            //Actually it might not be possible. At least we are closing it.
-            new Socket("sessionserver.mojang.com", 443).close();
-
+            try (InputStream stream = url.openStream()) {
+                // swallow response
+                ByteStreams.toByteArray(stream);
+            }
             return true;
-
         } catch (IOException e) {
-
             return false;
-
         }
-
     }
 
     /**
